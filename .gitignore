@@ -3,3 +3,4 @@
 gdb_src/
 cross_compiler/
 *.log
+*.elf
