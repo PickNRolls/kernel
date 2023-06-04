@@ -1,0 +1,5 @@
+*.o
+*.bin
+gdb_src/
+cross_compiler/
+*.log
