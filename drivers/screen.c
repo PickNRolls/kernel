@@ -1,4 +1,5 @@
 #include "screen.h"
+#include "../kernel/util.h"
 #include "ports.h"
 
 int internal_get_offset(int row, int col) { return 2 * (row * MAX_COLS + col); }
@@ -51,6 +52,14 @@ int internal_print_char(char c, int row, int col, unsigned char attribute) {
     video[offset] = c;
     video[offset + 1] = attribute;
     offset += 2;
+  }
+
+  if (offset >= MAX_OFFSET) {
+    util_memory_copy(video + BYTES_IN_ROW, video, MAX_OFFSET - BYTES_IN_ROW);
+    for (int i = 0; i < MAX_COLS; i++) {
+      video[MAX_OFFSET - BYTES_IN_ROW + i] = 0;
+    }
+    offset -= BYTES_IN_ROW;
   }
 
   internal_set_cursor_offset(offset);

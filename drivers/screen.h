@@ -4,7 +4,8 @@
 #define VIDEO_ADDRESS 0xb8000
 #define MAX_ROWS 25
 #define MAX_COLS 80
-#define MAX_OFFSET (MAX_ROWS * MAX_COLS * 2)
+#define BYTES_IN_ROW (MAX_COLS * 2)
+#define MAX_OFFSET (MAX_ROWS * BYTES_IN_ROW)
 #define WHITE_ON_BLACK 0x0f
 #define RED_ON_WHITE 0xf4
 
