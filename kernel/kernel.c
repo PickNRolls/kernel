@@ -1,15 +1,12 @@
+#include "../cpu/isr.h"
 #include "../drivers/screen.h"
 #include "util.h"
 
 int kernel_main() {
   screen_clear();
-
-  int i = 0;
-  for (i = 0; i < 24; i++) {
-    char str[255];
-    util_int_to_ascii(i, str);
-    screen_print_at(str, i, 0);
-  }
-
+  cpu_isr_install();
+  asm volatile("int $0");
+  asm volatile("int $1");
+  asm volatile("int $2");
   return 0;
 }
