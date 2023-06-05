@@ -1,3 +1,8 @@
+ifneq ("$(wildcard .env)", "")
+include .env
+export
+endif
+
 C_SOURCES = $(wildcard kernel/*.c drivers/*.c)
 HEADERS = $(wildcard kernel/*.h drivers/*.h)
 # Nice syntax for file extension replacement
@@ -10,7 +15,7 @@ GDB = i386-elf-gdb
 LD = i686-elf-ld
 else
 CC = /usr/local/i386elfgcc/bin/i386-elf-gcc
-GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
+GDB = i386-elf-gdb
 LD = i386-elf-ld
 endif
 # -g: Use debugging symbols in gcc
