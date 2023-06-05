@@ -39,7 +39,7 @@ run: os_image.bin
 
 # Open the connection to qemu and load our kernel-object file with symbols
 debug: os_image.bin kernel.elf
-	qemu-system-i386 -s -S -fda os_image.bin -d guest_errors, int &
+	qemu-system-i386 -s -S -fda os_image.bin &
 	${GDB} -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
 
 # Generic rules for wildcards
