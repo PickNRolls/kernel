@@ -11,8 +11,5 @@ int kernel_main() {
     screen_print_at(str, i, 0);
   }
 
-  screen_print("\nNew line 1\n");
-  screen_print("New line 2\n");
-
   return 0;
 }
