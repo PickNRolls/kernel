@@ -4,8 +4,15 @@ HEADERS = $(wildcard kernel/*.h drivers/*.h)
 OBJ = ${C_SOURCES:.c=.o}
 
 # Change this if your cross-compiler is somewhere else
+ifeq ($(ON_MACBOOK), 1)
+CC = i686-elf-gcc
+GDB = i386-elf-gdb
+LD = i686-elf-ld
+else
 CC = /usr/local/i386elfgcc/bin/i386-elf-gcc
 GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
+LD = i386-elf-ld
+endif
 # -g: Use debugging symbols in gcc
 CFLAGS = -g
 
@@ -16,11 +23,11 @@ os_image.bin: bootloader/bootloader.bin kernel.bin
 # '--oformat binary' deletes all symbols as a collateral, so we don't need
 # to 'strip' them manually on this case
 kernel.bin: bootloader/kernel_entry.o ${OBJ}
-	i386-elf-ld -o $@ -Ttext 0x1000 $^ --oformat binary
+	${LD} -o $@ -Ttext 0x1000 $^ --oformat binary
 
 # Used for debugging purposes
 kernel.elf: bootloader/kernel_entry.o ${OBJ}
-	i386-elf-ld -o $@ -Ttext 0x1000 $^ 
+	${LD} -o $@ -Ttext 0x1000 $^ 
 
 run: os_image.bin
 	qemu-system-i386 -fda os_image.bin
@@ -44,4 +51,3 @@ debug: os_image.bin kernel.elf
 clean:
 	rm -rf *.bin *.dis *.o os_image.bin *.elf
 	rm -rf kernel/*.o bootloader/*.bin drivers/*.o bootloader/*.o
-
