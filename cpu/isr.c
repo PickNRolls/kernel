@@ -1,7 +1,10 @@
 #include "isr.h"
+#include "../drivers/ports.h"
 #include "../drivers/screen.h"
 #include "../kernel/util.h"
 #include "idt.h"
+
+Isr *interrupt_handlers[256];
 
 void cpu_isr_install() {
   cpu_idt_set_entry(0, (uint32_t)isr0);
@@ -37,7 +40,39 @@ void cpu_isr_install() {
   cpu_idt_set_entry(30, (uint32_t)isr30);
   cpu_idt_set_entry(31, (uint32_t)isr31);
 
+  port_byte_out(0x20, 0x11);
+  port_byte_out(0xA0, 0x11);
+  port_byte_out(0x21, 0x20);
+  port_byte_out(0xA1, 0x28);
+  port_byte_out(0x21, 0x04);
+  port_byte_out(0xA1, 0x02);
+  port_byte_out(0x21, 0x01);
+  port_byte_out(0xA1, 0x01);
+  port_byte_out(0x21, 0x0);
+  port_byte_out(0xA1, 0x0);
+
+  cpu_idt_set_entry(32, (uint32_t)irq0);
+  cpu_idt_set_entry(33, (uint32_t)irq1);
+  cpu_idt_set_entry(34, (uint32_t)irq2);
+  cpu_idt_set_entry(35, (uint32_t)irq3);
+  cpu_idt_set_entry(36, (uint32_t)irq4);
+  cpu_idt_set_entry(37, (uint32_t)irq5);
+  cpu_idt_set_entry(38, (uint32_t)irq6);
+  cpu_idt_set_entry(39, (uint32_t)irq7);
+  cpu_idt_set_entry(40, (uint32_t)irq8);
+  cpu_idt_set_entry(41, (uint32_t)irq9);
+  cpu_idt_set_entry(42, (uint32_t)irq10);
+  cpu_idt_set_entry(43, (uint32_t)irq11);
+  cpu_idt_set_entry(44, (uint32_t)irq12);
+  cpu_idt_set_entry(45, (uint32_t)irq13);
+  cpu_idt_set_entry(46, (uint32_t)irq14);
+  cpu_idt_set_entry(47, (uint32_t)irq15);
+
   cpu_idt_set(); // Load with ASM
+}
+
+void cpu_isr_register_handler(uint32_t int_no, Isr *handler) {
+  interrupt_handlers[int_no] = handler;
 }
 
 char *exception_messages[] = {"Division By Zero",
@@ -84,4 +119,22 @@ void isr_handler(Registers r) {
   screen_print("\n");
   screen_print(exception_messages[r.int_no]);
   screen_print("\n");
+}
+
+void irq_handler(Registers r) {
+  if (r.int_no >= 40) {
+    port_byte_out(0xA0, 0x20); /* slave */
+  }
+  port_byte_out(0x20, 0x20); /* master */
+
+  screen_print("irq received: ");
+  char s[3];
+  util_int_to_ascii(r.int_no, s);
+  screen_print(s);
+  screen_print("\n");
+
+  if (interrupt_handlers[r.int_no] != 0) {
+    Isr *handler = interrupt_handlers[r.int_no];
+    handler(r);
+  }
 }
