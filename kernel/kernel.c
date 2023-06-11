@@ -7,7 +7,6 @@ int kernel_main() {
   screen_clear();
   cpu_isr_install();
   cpu_timer_init();
-  asm("sti");
 
   return 0;
 }

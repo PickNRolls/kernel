@@ -16,4 +16,5 @@ void cpu_idt_set() {
   idt_reg.offset = (uint32_t)&idt;
   idt_reg.size = IDT_ENTRIES * sizeof(Idt_Entry) - 1;
   asm volatile("lidt (%0)" : : "r"(&idt_reg));
+  asm volatile("sti");
 }
