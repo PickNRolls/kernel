@@ -77,7 +77,7 @@ typedef struct {
   uint32_t edi;
   uint32_t esi;
   uint32_t ebp;
-  uint32_t esp;
+  uint32_t useless;
   uint32_t ebx;
   uint32_t edx;
   uint32_t ecx;
@@ -91,11 +91,11 @@ typedef struct {
   uint32_t eip;
   uint32_t cs;
   uint32_t eflags;
-  uint32_t useresp;
+  uint32_t esp;
   uint32_t ss;
 } Registers;
 
-typedef void(Isr)(Registers r);
+typedef void(Isr)(Registers *r);
 
 void cpu_isr_register_handler(uint32_t int_no, Isr *handler);
 void cpu_isr_install();

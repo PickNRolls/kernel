@@ -19,7 +19,7 @@ GDB = i386-elf-gdb
 LD = i386-elf-ld
 endif
 # -g: Use debugging symbols in gcc
-CFLAGS = -g
+CFLAGS = -g -ffreestanding -Wall -Wextra -fno-exceptions -m32 
 
 # First rule is run by default
 os_image.bin: bootloader/bootloader.bin kernel.bin
@@ -45,7 +45,7 @@ debug: os_image.bin kernel.elf
 # Generic rules for wildcards
 # To make an object, always compile from its .c
 %.o: %.c ${HEADERS}
-	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
+	${CC} ${CFLAGS} -c $< -o $@
 
 %.o: %.asm
 	nasm $< -f elf -o $@

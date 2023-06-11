@@ -9,7 +9,7 @@ uint32_t tick = 0;
 void handle_timer() {
   tick++;
   screen_print("Tick: ");
-  char s[256];
+  char s[INT_STR_MAX_SIZE];
   util_int_to_ascii(tick, s);
   screen_print(s);
   screen_print("\n");
