@@ -12,9 +12,9 @@ void internal_set_cursor_offset(int offset) {
   port_byte_out(REG_SCREEN_CTRL, 15);
   port_byte_out(REG_SCREEN_DATA, offset & 0xff);
 }
-int internal_get_cursor_offset() {
+uint32_t internal_get_cursor_offset() {
   port_byte_out(REG_SCREEN_CTRL, 14);
-  int offset = port_byte_in(REG_SCREEN_DATA) << 8;
+  uint32_t offset = port_byte_in(REG_SCREEN_DATA) << 8;
   port_byte_out(REG_SCREEN_CTRL, 15);
   offset += port_byte_in(REG_SCREEN_DATA);
   return offset * 2;
@@ -23,7 +23,7 @@ int internal_get_cursor_offset() {
  * returns offset for next internal_print_char
  * */
 int internal_print_char(char c, int row, int col, unsigned char attribute) {
-  char *video = (char *)VIDEO_ADDRESS;
+  uint8_t *video = (uint8_t *)VIDEO_ADDRESS;
   int offset;
 
   if (row >= MAX_ROWS || col >= MAX_COLS) {
@@ -48,6 +48,11 @@ int internal_print_char(char c, int row, int col, unsigned char attribute) {
   if (c == '\n') {
     row = internal_get_offset_row(offset);
     offset = internal_get_offset(row + 1, 0);
+  } else if (c == '\b') {
+    if (offset != 0) {
+      offset -= 2;
+      video[offset] = ' ';
+    }
   } else {
     video[offset] = c;
     video[offset + 1] = attribute;
@@ -79,15 +84,9 @@ void screen_clear() {
   internal_set_cursor_offset(0);
 }
 
-void screen_print_at(char *message, int row, int col) {
-  int offset;
-  if (col >= 0 && row >= 0) {
-    offset = internal_get_offset(row, col);
-  } else {
-    offset = internal_get_cursor_offset();
-    row = internal_get_offset_row(offset);
-    col = internal_get_offset_col(offset);
-  }
+void screen_print_at_offset(char *message, uint32_t offset) {
+  uint32_t row = internal_get_offset_row(offset);
+  uint32_t col = internal_get_offset_col(offset);
 
   int i = 0;
   while (message[i] != 0) {
@@ -98,4 +97,17 @@ void screen_print_at(char *message, int row, int col) {
   }
 }
 
+void screen_print_at(char *message, int row, int col) {
+  uint32_t offset;
+  if (col >= 0 && row >= 0) {
+    offset = internal_get_offset(row, col);
+  } else {
+    offset = internal_get_cursor_offset();
+  }
+
+  return screen_print_at_offset(message, offset);
+}
+
 void screen_print(char *message) { screen_print_at(message, -1, -1); }
+
+void screen_backspace() { screen_print("\b"); }

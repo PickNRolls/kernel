@@ -6,14 +6,7 @@
 
 uint32_t tick = 0;
 
-void handle_timer() {
-  tick++;
-  screen_print("Tick: ");
-  char s[INT_STR_MAX_SIZE];
-  util_int_to_ascii(tick, s);
-  screen_print(s);
-  screen_print("\n");
-}
+void handle_timer() { tick++; }
 
 void cpu_timer_init() {
   cpu_isr_register_handler(IRQ0, handle_timer);

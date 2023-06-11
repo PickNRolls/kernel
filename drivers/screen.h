@@ -15,5 +15,6 @@
 void screen_clear();
 void screen_print_at(char *message, int col, int row);
 void screen_print(char *message);
+void screen_backspace();
 
 #endif

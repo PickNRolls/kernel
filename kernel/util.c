@@ -1,11 +1,11 @@
 #include "util.h"
 #include <stdint.h>
 
-void util_memory_copy(char *src, char *dest, int bytes) {
-  int i = 0;
-  while (i < bytes) {
-    *(dest + i) = *(src + i);
-    i++;
+void util_memory_copy(uint8_t *src, uint8_t *dest, uint32_t bytes) {
+  uint32_t index = 0;
+  while (index < bytes) {
+    *(dest + index) = *(src + index);
+    index++;
   }
 }
 
@@ -17,7 +17,7 @@ uint32_t util_str_length(const char *str) {
   return length;
 }
 
-void util_str_reverse(char const *str, char *output) {
+void util_str_reverse(const char *str, char *output) {
   if (str[0] == 0) {
     output[0] = 0;
     return;
@@ -53,4 +53,12 @@ void util_int_to_ascii(int n, char *output) {
   to_reverse[index] = 0;
 
   util_str_reverse(to_reverse, output);
+}
+
+char util_char_uppercase(char c) {
+  if (c < 0x61 || c > 0x7A) {
+    return c;
+  }
+
+  return c - 32;
 }
