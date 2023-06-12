@@ -20,5 +20,8 @@ int kernel_main() {
   keyboard_init();
   keyboard_register_handler(kernel_handle_keyboard);
 
+  while (1) {
+  }
+
   return 0;
 }
