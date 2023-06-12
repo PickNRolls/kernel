@@ -106,18 +106,75 @@ char key_to_char[KEY_CODE_MAX] = {
     [KEY_CODE_DOT] = '.',        [KEY_CODE_SLASH] = '/',
     [KEY_CODE_SPACE] = ' '};
 
-void keyboard_call_key(uint8_t key_code, uint8_t is_released) {
-  char ascii = key_to_char[key_code];
+char keyboard_get_key_code_char(uint8_t key_code) {
   uint8_t is_shift_pressed = key_codes_pressed[KEY_CODE_LEFT_SHIFT] ||
                              key_codes_pressed[KEY_CODE_RIGHT_SHIFT];
 
-  if (key_code == KEY_CODE_CAPS && !is_released) {
-    is_caps_toggled = !is_caps_toggled;
+  char c = key_to_char[key_code];
+  if (c != 0 && is_caps_toggled ^ is_shift_pressed) {
+    c = util_char_uppercase(c);
   }
 
-  // TODO: transform ascii when shift is pressed
-  if (ascii != 0 && is_caps_toggled ^ is_shift_pressed) {
-    ascii = util_char_uppercase(ascii);
+  if (!is_shift_pressed) {
+    return c;
+  }
+
+  switch (key_code) {
+  case KEY_CODE_BACKTICK:
+    return '~';
+
+  case KEY_CODE_DIGIT1:
+    return '!';
+  case KEY_CODE_DIGIT2:
+    return '@';
+  case KEY_CODE_DIGIT3:
+    return '#';
+
+  case KEY_CODE_DIGIT4:
+    return '$';
+  case KEY_CODE_DIGIT5:
+    return '%';
+  case KEY_CODE_DIGIT6:
+    return '^';
+
+  case KEY_CODE_DIGIT7:
+    return '&';
+  case KEY_CODE_DIGIT8:
+    return '*';
+  case KEY_CODE_DIGIT9:
+    return '(';
+  case KEY_CODE_DIGIT0:
+    return ')';
+  case KEY_CODE_DASH:
+    return '_';
+  case KEY_CODE_EQUAL:
+    return '+';
+  case KEY_CODE_COMMA:
+    return '<';
+  case KEY_CODE_DOT:
+    return '>';
+  case KEY_CODE_LEFT_BRACE:
+    return '{';
+  case KEY_CODE_RIGHT_BRACE:
+    return '}';
+  case KEY_CODE_SLASH:
+    return '?';
+  case KEY_CODE_BACKSLASH:
+    return '|';
+  case KEY_CODE_SEMICOLON:
+    return ':';
+  case KEY_CODE_APOSTROPHE:
+    return '"';
+  default:
+    return c;
+  }
+}
+
+void keyboard_call_key(uint8_t key_code, uint8_t is_released) {
+  char ascii = keyboard_get_key_code_char(key_code);
+
+  if (key_code == KEY_CODE_CAPS && !is_released) {
+    is_caps_toggled = !is_caps_toggled;
   }
 
   Keyboard_Packet packet = {
@@ -129,8 +186,9 @@ void keyboard_call_key(uint8_t key_code, uint8_t is_released) {
       .is_caps_pressed = key_codes_pressed[KEY_CODE_CAPS],
       .is_ctrl_pressed = key_codes_pressed[KEY_CODE_LEFT_CTRL] ||
                          key_codes_pressed[KEY_CODE_RIGHT_CTRL],
-      .is_shift_pressed = is_shift_pressed,
-      .is_repeat = 0,
+      .is_shift_pressed = key_codes_pressed[KEY_CODE_LEFT_SHIFT] ||
+                          key_codes_pressed[KEY_CODE_RIGHT_SHIFT],
+      .is_repeat = 0, // TODO: create proper is_repeat
   };
 
   uint32_t index = 0;

@@ -7,6 +7,7 @@ void util_memory_copy(uint8_t *src, uint8_t *dest, uint32_t bytes);
 void util_int_to_ascii(int n, char *output);
 void util_str_reverse(const char *str, char *output);
 char util_char_uppercase(char c);
+uint8_t util_is_char_letter(char c);
 
 #define INT_STR_MAX_SIZE 12
 #define INT8_STR_MAX_SIZE 5

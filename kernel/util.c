@@ -55,8 +55,10 @@ void util_int_to_ascii(int n, char *output) {
   util_str_reverse(to_reverse, output);
 }
 
+uint8_t util_is_char_letter(char c) { return c >= 0x61 && c <= 0x7A; }
+
 char util_char_uppercase(char c) {
-  if (c < 0x61 || c > 0x7A) {
+  if (!util_is_char_letter(c)) {
     return c;
   }
 
