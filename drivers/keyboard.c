@@ -104,7 +104,7 @@ char key_to_char[KEY_CODE_MAX] = {
     [KEY_CODE_B] = 'b',          [KEY_CODE_N] = 'n',
     [KEY_CODE_M] = 'm',          [KEY_CODE_COMMA] = ',',
     [KEY_CODE_DOT] = '.',        [KEY_CODE_SLASH] = '/',
-    [KEY_CODE_SPACE] = ' '};
+    [KEY_CODE_SPACE] = ' ',      [KEY_CODE_BACKTICK] = '`'};
 
 char keyboard_get_key_code_char(uint8_t key_code) {
   uint8_t is_shift_pressed = key_codes_pressed[KEY_CODE_LEFT_SHIFT] ||
@@ -128,7 +128,6 @@ char keyboard_get_key_code_char(uint8_t key_code) {
     return '@';
   case KEY_CODE_DIGIT3:
     return '#';
-
   case KEY_CODE_DIGIT4:
     return '$';
   case KEY_CODE_DIGIT5:
