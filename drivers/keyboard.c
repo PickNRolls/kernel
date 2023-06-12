@@ -122,7 +122,6 @@ char keyboard_get_key_code_char(uint8_t key_code) {
   switch (key_code) {
   case KEY_CODE_BACKTICK:
     return '~';
-
   case KEY_CODE_DIGIT1:
     return '!';
   case KEY_CODE_DIGIT2:
@@ -136,7 +135,6 @@ char keyboard_get_key_code_char(uint8_t key_code) {
     return '%';
   case KEY_CODE_DIGIT6:
     return '^';
-
   case KEY_CODE_DIGIT7:
     return '&';
   case KEY_CODE_DIGIT8:
