@@ -112,13 +112,10 @@ char *exception_messages[] = {"Division By Zero",
                               "Reserved"};
 
 void isr_handler(Registers *r) {
-  screen_print("received interrupt: ");
-  char s[3];
-  util_int_to_ascii(r->int_no, s);
-  screen_print(s);
-  screen_print("\n");
-  screen_print(exception_messages[r->int_no]);
-  screen_print("\n");
+  if (interrupt_handlers[r->int_no] != 0) {
+    Isr *handler = interrupt_handlers[r->int_no];
+    handler(r);
+  }
 }
 
 void irq_handler(Registers *r) {

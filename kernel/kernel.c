@@ -1,7 +1,9 @@
 #include "../cpu/isr.h"
+#include "../cpu/paging.h"
 #include "../cpu/timer.h"
 #include "../drivers/keyboard.h"
 #include "../drivers/screen.h"
+#include "../memlayout.h"
 #include "util.h"
 
 void kernel_handle_keyboard(Keyboard_Packet packet) {
@@ -11,12 +13,14 @@ void kernel_handle_keyboard(Keyboard_Packet packet) {
   }
 }
 
+void handle_page_fault(Registers *r) { screen_print("Page fault\n"); }
+
 int kernel_main() {
-  screen_clear();
-
   cpu_isr_install();
-  cpu_timer_init();
+  cpu_isr_register_handler(14, handle_page_fault);
 
+  screen_clear();
+  cpu_timer_init();
   keyboard_init();
   keyboard_register_handler(kernel_handle_keyboard);
 
