@@ -28,11 +28,11 @@ os_image.bin: bootloader/bootloader.bin kernel.bin
 # '--oformat binary' deletes all symbols as a collateral, so we don't need
 # to 'strip' them manually on this case
 kernel.bin: bootloader/kernel_entry.o ${OBJ}
-	${LD} -o $@ -T bootloader/kernel.ld $^ --oformat binary
+	${LD} -o $@ -T kernel.ld $^ --oformat binary
 
 # Used for debugging purposes
 kernel.elf: bootloader/kernel_entry.o ${OBJ}
-	${LD} -o $@ -T bootloader/kernel.ld $^ 
+	${LD} -o $@ -T kernel.ld $^ 
 
 run: os_image.bin
 	qemu-system-i386 -fda os_image.bin
